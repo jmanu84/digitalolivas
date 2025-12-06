@@ -62,7 +62,7 @@ body {
 
 /* HEADER - CAMBIADO A BLANCO */
 header {
-    background-color: #ffffff; /* BLANCO en lugar de negro */
+    background-color: #000; /* BLANCO en lugar de negro */
     color: #333;
     position: fixed;
     width: 100%;
