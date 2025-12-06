@@ -6,50 +6,52 @@
     <title>Digital Olivas - Impresión Profesional</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="estilos.css">
 </head>
 <body>
     <header>
         <div class="container">
-            <div class="logo">
-                <div class="logo-text">DIGITAL<span>OLIVAS</span></div>
-            </div>
-            <nav>
-                <ul>
+             <div class="logo">
+				<img src="logo.png" alt="Digital Olivas - Impresión Profesional" class="logo-img">
+			</div>
+            <button class="mobile-menu-btn" aria-label="Menú móvil">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav class="main-nav">
+                <ul class="nav-links">
                     <li><a href="#inicio">Inicio</a></li>
                     <li><a href="#servicios">Servicios</a></li>
                     <li><a href="#tecnologia">Tecnología</a></li>
                     <li><a href="#nosotros">Nosotros</a></li>
                     <li><a href="#contacto">Contacto</a></li>
-                    </ul>
+                </ul>
             </nav>
-            <div class="mobile-menu">
-                <i class="fas fa-bars"></i>
-            </div>
         </div>
     </header>
 
-    <section id="inicio" class="slider-section">
+    <!-- SLIDER HERO -->
+    <section id="inicio" class="slider-hero">
         <div class="slider-container">
-            <div class="slider">
+            <div class="slider-track">
                 <div class="slide active">
-                    <img src="1.jpg" alt="Slide 1" class="bg-img">
+                    <img src="1.jpg" alt="Impresión profesional 1" class="slide-img">
                 </div>
                 <div class="slide">
-                    <img src="2.jpg" alt="Slide 2" class="bg-img">
+                    <img src="2.jpg" alt="Impresión profesional 2" class="slide-img">
                 </div>
                 <div class="slide">
-                    <img src="3.jpg" alt="Slide 3" class="bg-img">
+                    <img src="3.jpg" alt="Impresión profesional 3" class="slide-img">
                 </div>
                 <div class="slide">
-                    <img src="4.jpg" alt="Slide 4" class="bg-img">
+                    <img src="4.jpg" alt="Impresión profesional 4" class="slide-img">
                 </div>
             </div>
+            
             <div class="slider-indicators">
-                <span class="indicator active"></span>
-                <span class="indicator"></span>
-                <span class="indicator"></span>
-                <span class="indicator"></span>
+                <span class="indicator active" data-slide="0"></span>
+                <span class="indicator" data-slide="1"></span>
+                <span class="indicator" data-slide="2"></span>
+                <span class="indicator" data-slide="3"></span>
             </div>
         </div>
     </section>
@@ -126,21 +128,21 @@
                         <i class="fas fa-map-marker-alt"></i>
                         <div>
                             <h4>Dirección</h4>
-                            <p>Calle Principal #123, Ciudad</p>
+                            <p>Av. Javier Prado Este 2800, San Borja 15037</p>
                         </div>
                     </div>
                     <div class="info-item">
                         <i class="fas fa-envelope"></i>
                         <div>
                             <h4>Email</h4>
-                            <p>info@digitalolivas.com</p>
+                            <p>digitalolivas@gmail.com</p>
                         </div>
                     </div>
                     <div class="info-item">
                         <i class="fas fa-phone-alt"></i>
                         <div>
                             <h4>Llámanos</h4>
-                            <p>+1 234 567 890</p>
+                            <p>984858918</p>
                         </div>
                     </div>
                 </div>
@@ -157,6 +159,11 @@
             <p>© 2023 Digital Olivas. Todos los derechos reservados.</p>
         </div>
     </footer>
+
+    <!-- Botón de WhatsApp -->
+    <a href="https://wa.me/+1234567890?text=Hola%20Digital%20Olivas,%20me%20interesa%20saber%20más%20sobre%20sus%20servicios" class="whatsapp-button" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
 
     <script src="main.js"></script>
 </body>

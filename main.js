@@ -1,89 +1,184 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const slides = document.querySelectorAll('.slide');
+    // ELEMENTOS DEL DOM
+    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+    const mainNav = document.querySelector('.main-nav');
+    const navLinks = document.querySelectorAll('.nav-links a');
+    const sliderTrack = document.querySelector('.slider-track');
     const indicators = document.querySelectorAll('.indicator');
-    const mobileMenu = document.querySelector('.mobile-menu');
-    const navMenu = document.querySelector('nav ul');
+    const totalSlides = document.querySelectorAll('.slide').length;
+    
     let currentSlide = 0;
     let slideInterval;
+    let isMenuOpen = false;
 
-    // Función para mostrar slide específico
-    function showSlide(n) {
-        // Quitar clase active
-        slides.forEach(slide => slide.classList.remove('active'));
-        indicators.forEach(indicator => indicator.classList.remove('active'));
+    // ========== MENÚ MÓVIL CORREGIDO ==========
+    mobileMenuBtn.addEventListener('click', function() {
+        isMenuOpen = !isMenuOpen;
+        mainNav.classList.toggle('active', isMenuOpen);
         
-        // Calcular índice
-        currentSlide = (n + slides.length) % slides.length;
-        
-        // Agregar clase active
-        slides[currentSlide].classList.add('active');
-        indicators[currentSlide].classList.add('active');
-    }
-
-    // Función siguiente slide
-    function nextSlide() {
-        showSlide(currentSlide + 1);
-    }
-
-    // Listeners para los indicadores (bolitas)
-    indicators.forEach((indicator, index) => {
-        indicator.addEventListener('click', () => {
-            showSlide(index);
-            resetInterval();
-        });
-    });
-
-    // Auto slide
-    function startInterval() {
-        slideInterval = setInterval(nextSlide, 5000);
-    }
-
-    function resetInterval() {
-        clearInterval(slideInterval);
-        startInterval();
-    }
-
-    // Iniciar
-    startInterval();
-
-    // Menú Móvil
-    mobileMenu.addEventListener('click', () => {
-        navMenu.classList.toggle('show');
-    });
-
-    // Cerrar menú al clickear enlace
-    document.querySelectorAll('nav a').forEach(link => {
-        link.addEventListener('click', () => {
-            navMenu.classList.remove('show');
-        });
-    });
-
-    // Smooth scroll
-    document.querySelectorAll('nav a').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            if (this.classList.contains('cotizador-link')) {
-                e.preventDefault();
-                alert('El cotizador online estará disponible próximamente.');
-                return;
-            }
-            e.preventDefault();
-            const targetId = this.getAttribute('href');
-            const targetSection = document.querySelector(targetId);
-            
-            if (targetSection) {
-                // Ajuste para el header sticky (80px aprox)
-                window.scrollTo({
-                    top: targetSection.offsetTop - 80,
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
-
-    // Cerrar menú click fuera
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('nav') && !e.target.closest('.mobile-menu')) {
-            navMenu.classList.remove('show');
+        // Cambiar icono del menú
+        const icon = this.querySelector('i');
+        if (isMenuOpen) {
+            icon.classList.remove('fa-bars');
+            icon.classList.add('fa-times');
+        } else {
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
         }
     });
+
+    // Cerrar menú al hacer clic en un enlace
+    navLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            if (window.innerWidth <= 768) {
+                isMenuOpen = false;
+                mainNav.classList.remove('active');
+                mobileMenuBtn.querySelector('i').classList.remove('fa-times');
+                mobileMenuBtn.querySelector('i').classList.add('fa-bars');
+            }
+        });
+    });
+
+    // Cerrar menú al hacer clic fuera
+    document.addEventListener('click', function(event) {
+        if (window.innerWidth <= 768 && isMenuOpen) {
+            if (!mainNav.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
+                isMenuOpen = false;
+                mainNav.classList.remove('active');
+                mobileMenuBtn.querySelector('i').classList.remove('fa-times');
+                mobileMenuBtn.querySelector('i').classList.add('fa-bars');
+            }
+        }
+    });
+
+    // ========== SLIDER CORREGIDO ==========
+    function goToSlide(slideIndex) {
+        // Validar límites
+        if (slideIndex < 0) slideIndex = totalSlides - 1;
+        if (slideIndex >= totalSlides) slideIndex = 0;
+        
+        currentSlide = slideIndex;
+        
+        // Mover slider
+        sliderTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+        
+        // Actualizar indicadores
+        indicators.forEach((indicator, index) => {
+            indicator.classList.toggle('active', index === currentSlide);
+        });
+    }
+
+    function nextSlide() {
+        goToSlide(currentSlide + 1);
+    }
+
+    function startSlider() {
+        slideInterval = setInterval(nextSlide, 4000);
+    }
+
+    function stopSlider() {
+        clearInterval(slideInterval);
+    }
+
+    // Eventos para indicadores
+    indicators.forEach((indicator, index) => {
+        indicator.addEventListener('click', function() {
+            stopSlider();
+            goToSlide(index);
+            startSlider();
+        });
+    });
+
+    // Pausar slider al hover
+    sliderTrack.addEventListener('mouseenter', stopSlider);
+    sliderTrack.addEventListener('mouseleave', startSlider);
+
+    // Pausar slider al tocar (móvil)
+    sliderTrack.addEventListener('touchstart', stopSlider);
+    sliderTrack.addEventListener('touchend', function() {
+        setTimeout(startSlider, 3000);
+    });
+
+    // Iniciar slider
+    startSlider();
+
+    // ========== SCROLL SUAVE ==========
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            
+            // Solo procesar enlaces internos
+            if (href === '#' || href === '#inicio') {
+                e.preventDefault();
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+                return;
+            }
+            
+            if (href.startsWith('#')) {
+                e.preventDefault();
+                const targetElement = document.querySelector(href);
+                
+                if (targetElement) {
+                    const headerHeight = document.querySelector('header').offsetHeight;
+                    const targetPosition = targetElement.offsetTop - headerHeight;
+                    
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            }
+        });
+    });
+
+    // ========== AJUSTAR MENÚ EN RESIZE ==========
+    window.addEventListener('resize', function() {
+        // Cerrar menú móvil al cambiar a desktop
+        if (window.innerWidth > 768 && isMenuOpen) {
+            isMenuOpen = false;
+            mainNav.classList.remove('active');
+            mobileMenuBtn.querySelector('i').classList.remove('fa-times');
+            mobileMenuBtn.querySelector('i').classList.add('fa-bars');
+        }
+        
+        // Ajustar altura del slider en resize
+        const header = document.querySelector('header');
+        const sliderHero = document.querySelector('.slider-hero');
+        if (header && sliderHero) {
+            sliderHero.style.height = `calc(100vh - ${header.offsetHeight}px)`;
+        }
+    });
+
+    // ========== ANIMACIÓN DE ELEMENTOS AL SCROLL ==========
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    // Observar elementos para animación
+    document.querySelectorAll('.service-card, .tech-info, .tech-visual, .stat-item').forEach(el => {
+        observer.observe(el);
+    });
+
+    // ========== AJUSTE INICIAL DEL SLIDER ==========
+    // Asegurar altura correcta al cargar
+    setTimeout(() => {
+        const header = document.querySelector('header');
+        const sliderHero = document.querySelector('.slider-hero');
+        if (header && sliderHero) {
+            sliderHero.style.height = `calc(100vh - ${header.offsetHeight}px)`;
+        }
+    }, 100);
 });
