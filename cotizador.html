@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generar Cotización - Digital Olivas</title>
+    <title>Cotización - Digital Olivas</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="estilos.css">
@@ -12,13 +12,14 @@
         .bg-light {
             background-color: #f8f9fa;
             min-height: 100vh;
+            padding-top: 70px;
         }
         
         .cotizador-container {
             display: flex;
             flex-direction: column;
             gap: 30px;
-            padding: 100px 20px 50px 20px;
+            padding: 30px 20px 50px 20px;
             max-width: 1200px;
         }
         
@@ -66,6 +67,12 @@
         
         .form-group.small {
             max-width: 150px;
+        }
+        
+        @media (max-width: 992px) {
+            .form-group.small {
+                max-width: 100%;
+            }
         }
         
         .form-group label {
@@ -181,14 +188,15 @@
         
         .inv-logo h1 {
             color: #2196F3;
-            font-size: 32px;
-            margin-bottom: 5px;
+            font-size: 28px;
+            margin-bottom: 10px;
         }
         
         .inv-logo p {
             color: #666;
             margin: 2px 0;
             font-size: 14px;
+            line-height: 1.4;
         }
         
         .inv-details {
@@ -197,13 +205,14 @@
         
         .inv-details h3 {
             color: #333;
-            font-size: 28px;
+            font-size: 24px;
             margin-bottom: 10px;
         }
         
         .inv-details p {
             margin: 5px 0;
             color: #666;
+            font-size: 14px;
         }
         
         .inv-details strong {
@@ -214,6 +223,7 @@
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
+            font-size: 14px;
         }
         
         .invoice-table thead {
@@ -222,7 +232,7 @@
         }
         
         .invoice-table th {
-            padding: 15px;
+            padding: 12px;
             text-align: center;
             font-weight: 600;
             border: none;
@@ -237,7 +247,7 @@
         }
         
         .invoice-table td {
-            padding: 15px;
+            padding: 12px;
             text-align: center;
         }
         
@@ -275,31 +285,45 @@
         
         .totals-box {
             background: #f8f9fa;
-            padding: 20px;
+            padding: 15px;
             border-radius: 8px;
-            max-width: 400px;
+            max-width: 350px;
             margin-left: auto;
             border: 1px solid #e0e0e0;
+            font-size: 14px;
         }
         
         .total-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
-            font-size: 16px;
+            margin-bottom: 8px;
+            font-size: 14px;
         }
         
         .total-row.grand-total {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
             color: #2196F3;
-            margin-top: 15px;
-            padding-top: 15px;
+            margin-top: 12px;
+            padding-top: 12px;
             border-top: 2px solid #2196F3;
         }
         
+        .saludo-formal {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .saludo-formal p {
+            margin: 5px 0;
+            line-height: 1.5;
+        }
+        
         .terms {
-            margin-top: 40px;
+            margin-top: 30px;
             padding-top: 20px;
             border-top: 1px solid #eee;
             font-size: 14px;
@@ -314,6 +338,7 @@
             border-left: 4px solid #2196F3;
             font-style: italic;
             color: #333;
+            font-size: 14px;
         }
         
         .company-info {
@@ -350,87 +375,245 @@
             border: 1px solid #ddd;
         }
         
-        /* ESTILOS DE IMPRESIÓN */
+        .firma-section {
+            margin-top: 40px;
+            text-align: center;
+        }
+        
+        .firma-line {
+            margin-top: 40px;
+            border-top: 1px solid #333;
+            width: 200px;
+            display: inline-block;
+            padding-top: 10px;
+        }
+        
+        /* ========== ESTILOS CRÍTICOS DE IMPRESIÓN ========== */
+        /* Estos estilos eliminan completamente el texto y bordes del navegador */
         @media print {
-            .no-print {
-                display: none !important;
+            /* Configuración principal de página A4 */
+            @page {
+                size: A4;
+                margin: 0 !important;
+                padding: 0 !important;
             }
             
-            .cotizador-container {
-                padding: 0;
+            /* Eliminar márgenes automáticos del navegador */
+            @page :first {
+                margin: 0 !important;
             }
             
-            .invoice-sheet {
-                box-shadow: none;
-                border: 1px solid #ddd;
-                padding: 20px;
+            @page :left {
+                margin: 0 !important;
+            }
+            
+            @page :right {
+                margin: 0 !important;
+            }
+            
+            /* Estilos para el cuerpo del documento */
+            body {
+                width: 210mm !important;
+                height: 297mm !important;
+                margin: 0 auto !important;
+                padding: 0 !important;
+                background: white !important;
+                font-size: 12px !important;
+                line-height: 1.4 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            
+            /* IMPORTANTE: Eliminar encabezados y pies de página del navegador */
+            @page {
                 margin: 0;
+                
+                /* Esto elimina el texto automático del navegador */
+                marks: none;
+                
+                /* Esto elimina la URL y fecha */
+                prince-bleed: none;
+                prince-trim: none;
+                
+                /* Para Chrome/Edge */
+                -webkit-bleed: none;
+                bleed: none;
+                
+                /* Para Firefox */
+                margin-header: 0;
+                margin-footer: 0;
             }
             
+            /* Eliminar bordes de enlace/imagen en algunos navegadores */
+            a[href]:after {
+                content: none !important;
+            }
+            
+            /* Contenedor principal */
+            .cotizador-container {
+                width: 210mm !important;
+                height: 297mm !important;
+                padding: 15mm !important;
+                margin: 0 !important;
+                box-shadow: none !important;
+                background: white !important;
+            }
+            
+            /* Hoja de cotización */
+            .invoice-sheet {
+                width: 180mm !important; /* 210mm - 15mm*2 de márgenes */
+                min-height: 267mm !important; /* 297mm - 15mm*2 */
+                margin: 0 auto !important;
+                padding: 10mm !important;
+                box-shadow: none !important;
+                border: none !important;
+                border-radius: 0 !important;
+                page-break-inside: avoid;
+                page-break-after: avoid;
+            }
+            
+            /* Encabezado */
+            .invoice-header {
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+            }
+            
+            .inv-logo h1 {
+                font-size: 22px !important;
+                margin-bottom: 5px !important;
+            }
+            
+            .inv-logo p {
+                font-size: 10px !important;
+                line-height: 1.3 !important;
+                margin: 1px 0 !important;
+            }
+            
+            .inv-details h3 {
+                font-size: 18px !important;
+                margin-bottom: 5px !important;
+            }
+            
+            .inv-details p {
+                font-size: 10px !important;
+                margin: 2px 0 !important;
+            }
+            
+            /* Tabla */
+            .invoice-table {
+                font-size: 10px !important;
+                margin: 10px 0 !important;
+            }
+            
+            .invoice-table th,
+            .invoice-table td {
+                padding: 6px 4px !important;
+            }
+            
+            /* Contenido */
+            .saludo-formal {
+                font-size: 10px !important;
+                padding: 10px !important;
+                margin-bottom: 10px !important;
+            }
+            
+            .terms {
+                font-size: 10px !important;
+                margin-top: 15px !important;
+                padding-top: 10px !important;
+            }
+            
+            .amount-in-words {
+                font-size: 11px !important;
+                padding: 8px !important;
+                margin: 10px 0 !important;
+            }
+            
+            .totals-box {
+                max-width: 250px !important;
+                padding: 10px !important;
+                font-size: 11px !important;
+            }
+            
+            .total-row {
+                font-size: 11px !important;
+                margin-bottom: 5px !important;
+            }
+            
+            .total-row.grand-total {
+                font-size: 14px !important;
+                margin-top: 8px !important;
+                padding-top: 8px !important;
+            }
+            
+            .company-info {
+                font-size: 9px !important;
+                margin-top: 20px !important;
+                padding-top: 10px !important;
+            }
+            
+            .bank-info-table {
+                font-size: 8px !important;
+            }
+            
+            .bank-info-table th,
+            .bank-info-table td {
+                padding: 3px !important;
+            }
+            
+            .firma-section {
+                margin-top: 20px !important;
+                font-size: 10px !important;
+            }
+            
+            .firma-line {
+                margin-top: 20px !important;
+                width: 150px !important;
+            }
+            
+            /* ===== IMPORTANTE: Eliminar elementos no deseados ===== */
+            /* Eliminar controles del cotizador */
+            .no-print,
+            header,
+            .controls-area,
+            .delete-btn,
+            .whatsapp-button,
+            .mobile-menu-btn,
+            .main-nav {
+                display: none !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
+                height: 0 !important;
+                width: 0 !important;
+                overflow: hidden !important;
+            }
+            
+            /* Eliminar cualquier borde o sombra adicional */
+            * {
+                box-shadow: none !important;
+                text-shadow: none !important;
+            }
+            
+            /* Asegurar que no haya desbordamiento */
+            html, body {
+                overflow: hidden !important;
+            }
+        }
+        
+        /* Estilo para cuando se está en vista previa de impresión */
+        @media screen and (min-width: 210mm) {
             body {
                 background: white !important;
             }
             
-            header, .controls-area {
-                display: none !important;
+            .cotizador-container {
+                max-width: 210mm;
             }
-            
-            .invoice-table {
-                font-size: 12px;
-            }
-            
-            .invoice-table th, .invoice-table td {
-                padding: 10px 8px;
-            }
-            
-            .delete-btn {
-                display: none;
-            }
-        }
-        
-        /* LOGO IMPRESIÓN */
-        .print-logo {
-            display: none;
-        }
-        
-        @media print {
-            .print-logo {
-                display: block;
-                text-align: center;
-                margin-bottom: 20px;
-            }
-            
-            .print-logo img {
-                height: 60px;
-                width: auto;
-            }
-        }
-        
-        .company-logo {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 10px;
-        }
-        
-        .company-logo img {
-            height: 50px;
-            width: auto;
-        }
-        
-        .company-logo h1 {
-            margin: 0;
-            font-size: 24px;
-            color: #2196F3;
         }
     </style>
 </head>
 <body class="bg-light">
     
-    <header>
-        
-    </header>
-
     <div class="container cotizador-container">
         
         <div class="controls-area no-print">
@@ -449,7 +632,7 @@
                     <input type="number" id="precServicio" step="0.01" placeholder="0.00">
                 </div>
                 <div class="form-group btn-group-align">
-                    <button onclick="agregarItem()" class="add-btn"><i class="fas fa-plus"></i>Item</button>
+                    <button onclick="agregarItem()" class="add-btn"><i class="fas fa-plus"></i> Agregar</button>
                 </div>
             </div>
             
@@ -463,23 +646,20 @@
         </div>
 
         <div class="invoice-sheet" id="areaImpresion">
-            <!-- Logo solo para impresión -->
-            <div class="print-logo">
-                <img src="logo.png" alt="Digital Olivas">
-            </div>
-            
             <!-- Encabezado de la cotización -->
             <div class="invoice-header">
                 <div class="inv-logo">
-                    <div class="company-logo">
-                        <img src="logo.png" alt="Digital Olivas" class="logo-img">
-                        
-                    </div>
+                    <h1>Digital Olivas</h1>
+                    <p>Av. Javier Prado Este N° 2800<br>
+                       San Borja - Lima<br>
+                       984858918<br>
+                       digitalolivas@gmail.com<br>
+                       www.digitalolivas.com</p>
                 </div>
                 <div class="inv-details">
-                    <p>Av. Javier Prado Este N° 2800 <br>San Borja - Lima<br>984858918 <br>digitalolivas@gmail.com <br>www.digitalolivas.com</p>
+                    <h3>COTIZACIÓN</h3>
                     <p><strong>N° de Cotización:</strong> <span id="numeroCotizacion">001-2025</span></p>
-                    
+                    <p><strong>Fecha:</strong> <span id="fechaHoy"></span></p>
                 </div>
             </div>
 
@@ -487,8 +667,8 @@
             <div class="saludo-formal">
                 <p><strong>Señores:</strong> <span id="clienteFormal">Consumidor Final</span></p>
                 <p><strong>Presente.-</strong></p>
-                <p>De nuestra mayor consideración:</p>
-                <p>Tenemos el agrado de dirigirnos a ustedes a fin de presentarle nuestra propuesta económica. Somos una empresa dedicada a brindar servicios de impresión, ofreciendo soluciones integrales para la gestión de documentos, impresión de planos y copias, digitalización / escaneo de documentos. <strong>DIGITAL OLIVAS E.I.R.L</strong> cuenta con más de 15 años de experiencia brindando soluciones.</p>
+                <p>De nuestra consideración:</p>
+                <p>Por medio de la presente presentamos nuestra cotización:</p>
             </div>
 
             <!-- Tabla de items -->
@@ -497,9 +677,9 @@
                     <tr>
                         <th style="width: 50px;">Item</th>
                         <th>Descripción</th>
-                        <th style="width: 100px;">Cant.</th>
-                        <th style="width: 120px;">P. Unit (S/)</th>
-                        <th style="width: 120px;">Total (S/)</th>
+                        <th style="width: 80px;">Cant.</th>
+                        <th style="width: 100px;">P. Unit (S/)</th>
+                        <th style="width: 100px;">Total (S/)</th>
                         <th class="no-print" style="width: 50px;">Acción</th>
                     </tr>
                 </thead>
@@ -536,7 +716,6 @@
                 <h4>CONDICIONES DE TRABAJO:</h4>
                 <p>1. Un adelanto del 50% antes de realizar el trabajo y saldo pendiente a la entrega de todo el trabajo.</p>
                 <p>2. Validez de la oferta: 15 días.</p>
-                
             </div>
             
             <!-- Información de la empresa y cuenta bancaria -->
@@ -559,14 +738,22 @@
                     </tbody>
                 </table>
                 
-                <div style="margin-top: 30px; text-align: center;">
-                    <p>Atentamente,</p>
-                    <p style="margin-top: 40px;">________________________________</p>
-                    <p><strong>Jorge Olivas</strong></p>
-                    <p>Telf: 984858918</p>
+                <!-- SECCIÓN DE FIRMA MUY COMPACTA -->
+                <div class="firma-section" style="margin-top: 15px; text-align: center;">
+                    <p style="margin-bottom: 5px; font-size: 13px;">Atentamente,</p>
+                    
+                    <!-- Firma digital -->
+                    <div style="margin: 5px 0;">
+                        <img src="firma.jpg" alt="Firma Jorge Olivas" style="max-height: 90px;">
+                    </div>
+                    
+                    <!-- Nombre y teléfono en una línea -->
+                    <p style="margin: 3px 0; font-size: 13px;">
+                        <strong>Jorge Olivas</strong> | Tel: 984858918
+                    </p>
                 </div>
                 
-                <p style="text-align: center; margin-top: 20px; font-style: italic;">
+                <p style="text-align: center; margin-top: 20px; font-style: italic; font-size: 11px;">
                     Av. Javier Prado Este 2800 Int. 3 San Borja – Lima | Telf. 984858918 / digitalolivas@gmail.com
                 </p>
             </div>
@@ -647,19 +834,24 @@
         }
 
         // Poner fecha de hoy
-        document.getElementById('fechaHoy').textContent = new Date().toLocaleDateString('es-ES', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
+        function actualizarFecha() {
+            const hoy = new Date();
+            const opciones = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('fechaHoy').textContent = hoy.toLocaleDateString('es-ES', opciones);
+        }
 
-        // Inicializar número de cotización
-        actualizarNumeroCotizacion();
+        // Inicializar número de cotización y fecha
+        function inicializarDatos() {
+            actualizarNumeroCotizacion();
+            actualizarFecha();
+        }
+
+        // Llamar al cargar
+        document.addEventListener('DOMContentLoaded', inicializarDatos);
 
         function actualizarCliente() {
             const input = document.getElementById('inputCliente').value;
             const clienteMostrado = input || 'Consumidor Final';
-            document.getElementById('nombreCliente').innerText = clienteMostrado;
             document.getElementById('clienteFormal').innerText = clienteMostrado.toUpperCase();
         }
 
@@ -735,13 +927,116 @@
             document.getElementById('montoLetras').textContent = numeroALetras(total);
         }
 
+        // Función para configurar la impresión limpia
+        function configurarImpresionLimpia() {
+            // Crear estilos específicos para impresión limpia
+            const printStyles = `
+                <style id="clean-print-styles">
+                    /* Configuración para eliminar encabezados y pies de página del navegador */
+                    @page {
+                        size: A4;
+                        margin: 15mm;
+                        
+                        /* Eliminar encabezados y pies automáticos */
+                        prince-bleed: none;
+                        prince-trim: none;
+                        
+                        /* Para navegadores modernos */
+                        bleed: none;
+                        marks: none;
+                        
+                        /* Para Firefox */
+                        margin-header: 0;
+                        margin-footer: 0;
+                    }
+                    
+                    /* Eliminar cualquier contenido generado por el navegador */
+                    body::before,
+                    body::after,
+                    @page :header,
+                    @page :footer {
+                        display: none !important;
+                        content: none !important;
+                    }
+                    
+                    /* Asegurar que el contenido ocupe toda la página A4 */
+                    html, body {
+                        width: 210mm !important;
+                        height: 297mm !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                    }
+                    
+                    /* Eliminar bordes de impresión */
+                    * {
+                        -webkit-print-color-adjust: exact !important;
+                        print-color-adjust: exact !important;
+                    }
+                </style>
+            `;
+            
+            // Agregar estilos si no existen
+            if (!document.querySelector('#clean-print-styles')) {
+                document.head.insertAdjacentHTML('beforeend', printStyles);
+            }
+            
+            // También configurar antes de imprimir
+            const beforePrint = () => {
+                // Cambiar título temporalmente para evitar que aparezca en el PDF
+                const originalTitle = document.title;
+                document.title = "COTIZACIÓN - Digital Olivas";
+                
+                // Restaurar título después de un breve momento
+                setTimeout(() => {
+                    document.title = originalTitle;
+                }, 1000);
+            };
+            
+            const afterPrint = () => {
+                // Limpiar estilos después de imprimir
+                const styles = document.querySelector('#clean-print-styles');
+                if (styles) {
+                    styles.remove();
+                }
+            };
+            
+            // Agregar event listeners
+            window.addEventListener('beforeprint', beforePrint);
+            window.addEventListener('afterprint', afterPrint);
+        }
+
         function imprimirCotizacion() {
+            // Validar que haya items
+            const filas = document.querySelectorAll('#tablaCuerpo tr');
+            if (filas.length === 0) {
+                alert("Por favor agregue al menos un item a la cotización");
+                return;
+            }
+            
             // Incrementar número de cotización para la próxima
             numeroCotizacion++;
             actualizarNumeroCotizacion();
             
-            // Imprimir
-            window.print();
+            // Actualizar fecha
+            actualizarFecha();
+            
+            // Configurar impresión limpia
+            configurarImpresionLimpia();
+            
+            // Usar setTimeout para asegurar que los estilos se apliquen
+            setTimeout(() => {
+                // Cambiar temporalmente el título para evitar que aparezca en la impresión
+                const originalTitle = document.title;
+                document.title = "COTIZACIÓN";
+                
+                // Imprimir
+                window.print();
+                
+                // Restaurar título
+                setTimeout(() => {
+                    document.title = originalTitle;
+                }, 100);
+            }, 100);
             
             // Después de imprimir, mantener el número actual
             numeroCotizacion--;
