@@ -180,5 +180,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (header && sliderHero) {
             sliderHero.style.height = `calc(100vh - ${header.offsetHeight}px)`;
         }
+        
+        // Asegurar que el primer slide esté activo
+        goToSlide(0);
     }, 100);
 });
+[file content end]

@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let slideInterval;
     let isMenuOpen = false;
 
-    // ========== MENÚ MÓVIL ==========
+    // ========== MENÚ MÓVIL CORREGIDO ==========
     mobileMenuBtn.addEventListener('click', function() {
         isMenuOpen = !isMenuOpen;
         mainNav.classList.toggle('active', isMenuOpen);
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // ========== SLIDER AUTOMÁTICO ==========
+    // ========== SLIDER CORREGIDO ==========
     function goToSlide(slideIndex) {
         // Validar límites
         if (slideIndex < 0) slideIndex = totalSlides - 1;
@@ -173,26 +173,12 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // ========== AJUSTE INICIAL DEL SLIDER ==========
-    function adjustSliderHeight() {
+    // Asegurar altura correcta al cargar
+    setTimeout(() => {
         const header = document.querySelector('header');
         const sliderHero = document.querySelector('.slider-hero');
         if (header && sliderHero) {
             sliderHero.style.height = `calc(100vh - ${header.offsetHeight}px)`;
         }
-    }
-
-    // Ajustar altura inicial y cuando cambia la orientación
-    adjustSliderHeight();
-    window.addEventListener('orientationchange', adjustSliderHeight);
-    
-    // Asegurar que las imágenes se carguen correctamente
-    window.addEventListener('load', function() {
-        // Forzar reflow para asegurar que el slider se renderice correctamente
-        sliderTrack.style.transition = 'none';
-        sliderTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
-        
-        setTimeout(() => {
-            sliderTrack.style.transition = 'transform 0.5s ease-in-out';
-        }, 50);
-    });
+    }, 100);
 });

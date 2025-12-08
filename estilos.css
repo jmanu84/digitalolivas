@@ -205,6 +205,7 @@ header .container {
     line-height: 0; /* Eliminar espacios en blanco debajo de la imagen */
 }
 
+/* Control de imágenes según dispositivo */
 .slide-img {
     max-width: 100%;
     max-height: 100%;
@@ -214,6 +215,15 @@ header .container {
     object-position: center;
     display: block;
     position: relative;
+}
+
+/* Por defecto: mostrar desktop, ocultar móvil */
+.desktop-img {
+    display: block;
+}
+
+.mobile-img {
+    display: none;
 }
 
 /* Para SVG que puedan ser muy anchos */
@@ -233,6 +243,16 @@ header .container {
     object-fit: cover;
     width: 100%;
     height: 100%;
+}
+
+.slider-indicators {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 10;
 }
 
 .indicator {
@@ -514,6 +534,15 @@ footer p {
 
 /* VERSIÓN MÓVIL CORREGIDA */
 @media (max-width: 768px) {
+    /* Cambiar imágenes en móvil: mostrar verticales, ocultar horizontales */
+    .desktop-img {
+        display: none !important;
+    }
+    
+    .mobile-img {
+        display: block !important;
+    }
+    
     /* MENÚ MÓVIL CORREGIDO - BLANCO con textos azules */
     .mobile-menu-btn {
         display: block;
@@ -578,12 +607,12 @@ footer p {
         margin-top: 70px;
     }
     
-    .image-container {
+    .slider-container {
         padding: 10px;
     }
     
     .slider-indicators {
-        bottom: 20px;
+        bottom: 15px;
     }
     
     /* SERVICIOS MÓVIL */
@@ -662,12 +691,12 @@ footer p {
     }
     
     .slider-indicators {
-        bottom: 15px;
+        bottom: 10px;
     }
     
     .indicator {
-        width: 10px;
-        height: 10px;
+        width: 8px;
+        height: 8px;
     }
     
     /* HEADER MÓVIL PEQUEÑO */
@@ -692,11 +721,6 @@ footer p {
     .logo-img {
         height: 35px;
     }
-    
-    /* Ajuste para imágenes en móvil */
-    .image-container {
-        padding: 5px;
-    }
 }
 
 /* ORIENTACIÓN LANDSCAPE */
@@ -709,8 +733,5 @@ footer p {
         max-height: calc(100vh - 70px);
         overflow-y: auto;
     }
-    
-    .image-container {
-        padding: 10px;
-    }
 }
+[file content end]
