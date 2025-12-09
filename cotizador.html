@@ -8,6 +8,28 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="estilos.css">
     <style>
+        /* Estilos para el textarea de cliente */
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 16px;
+            line-height: 1.4;
+            transition: border-color 0.3s;
+        }
+
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #2196F3;
+            box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+        }
+
+        .form-group textarea::placeholder {
+            color: #999;
+        }
+        
         /* ESTILOS ESPECÍFICOS DEL COTIZADOR */
         .bg-light {
             background-color: #f8f9fa;
@@ -40,15 +62,22 @@
             gap: 10px;
         }
         
+        /* MODIFICADO: Grid con 5 columnas en lugar de 4 */
         .input-grid {
             display: grid;
-            grid-template-columns: 1fr 150px 150px 120px;
+            grid-template-columns: 1fr 120px 120px 100px 120px;
             gap: 15px;
             margin-bottom: 25px;
             align-items: end;
         }
         
-        @media (max-width: 992px) {
+        @media (max-width: 1200px) {
+            .input-grid {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
             .input-grid {
                 grid-template-columns: 1fr 1fr;
             }
@@ -66,10 +95,10 @@
         }
         
         .form-group.small {
-            max-width: 150px;
+            max-width: 120px;
         }
         
-        @media (max-width: 992px) {
+        @media (max-width: 1200px) {
             .form-group.small {
                 max-width: 100%;
             }
@@ -82,15 +111,18 @@
             font-size: 14px;
         }
         
-        .form-group input {
+        .form-group input, 
+        .form-group select {
             padding: 12px 15px;
             border: 1px solid #ddd;
             border-radius: 5px;
             font-size: 16px;
             font-family: 'Poppins', sans-serif;
+            background-color: white;
         }
         
-        .form-group input:focus {
+        .form-group input:focus,
+        .form-group select:focus {
             outline: none;
             border-color: #2196F3;
             box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
@@ -256,7 +288,8 @@
             color: #333;
         }
         
-        .invoice-table td:nth-child(2) {
+        .invoice-table td:nth-child(2),
+        .invoice-table td:nth-child(3) {
             text-align: left;
         }
         
@@ -618,10 +651,21 @@
         
         <div class="controls-area no-print">
             <h2><i class="fas fa-file-invoice"></i> Generar Nueva Cotización</h2>
+            <!-- MODIFICADO: Grid con 5 columnas en lugar de 4 -->
             <div class="input-grid">
                 <div class="form-group">
-                    <label>Descripción del Servicio / Producto</label>
+                    <label>Producto / Servicio</label>
                     <input type="text" id="descServicio" placeholder="Ej: Ploteo A1 a color">
+                </div>
+                <div class="form-group small">
+                    <label>Tamaño</label>
+                    <select id="tamanoServicio">
+                        <option value="A0">A0</option>
+                        <option value="A1">A1</option>
+                        <option value="A2" selected>A2</option>
+                        <option value="A3">A3</option>
+                        <option value="A4">A4</option>
+                    </select>
                 </div>
                 <div class="form-group small">
                     <label>Cantidad</label>
@@ -639,7 +683,10 @@
             <div class="client-controls">
                 <div class="form-group">
                     <label>Cliente:</label>
-                    <input type="text" id="inputCliente" placeholder="Nombre del cliente o empresa" oninput="actualizarCliente()">
+                    <textarea id="inputCliente" placeholder="Nombre del cliente o empresa" 
+                     oninput="actualizarCliente()" 
+                     rows="2" 
+                     style="resize: vertical; min-height: 40px;"></textarea>
                 </div>
                 <button onclick="imprimirCotizacion()" class="print-btn"><i class="fas fa-print"></i> Imprimir / Generar PDF</button>
             </div>
@@ -665,21 +712,22 @@
 
             <!-- Saludo formal -->
             <div class="saludo-formal">
-                <p><strong>Señores:</strong> <span id="clienteFormal">Consumidor Final</span></p>
+                <p><strong>Señores:</strong><br><span id="clienteFormal">Consumidor Final</span></p>
                 <p><strong>Presente.-</strong></p>
                 <p>De nuestra consideración:</p>
                 <p>Por medio de la presente presentamos nuestra cotización:</p>
             </div>
 
-            <!-- Tabla de items -->
+            <!-- MODIFICADO: Tabla con 7 columnas (añadida columna Tamaño) -->
             <table class="invoice-table">
                 <thead>
                     <tr>
-                        <th style="width: 50px;">Item</th>
+                        <th style="width: 40px;">Item</th>
                         <th>Descripción</th>
-                        <th style="width: 80px;">Cant.</th>
-                        <th style="width: 100px;">P. Unit (S/)</th>
-                        <th style="width: 100px;">Total (S/)</th>
+                        <th style="width: 60px;">Tamaño</th>
+                        <th style="width: 60px;">Cant.</th>
+                        <th style="width: 90px;">P. Unit (S/)</th>
+                        <th style="width: 90px;">Total (S/)</th>
                         <th class="no-print" style="width: 50px;">Acción</th>
                     </tr>
                 </thead>
@@ -850,13 +898,28 @@
         document.addEventListener('DOMContentLoaded', inicializarDatos);
 
         function actualizarCliente() {
-            const input = document.getElementById('inputCliente').value;
-            const clienteMostrado = input || 'Consumidor Final';
-            document.getElementById('clienteFormal').innerText = clienteMostrado.toUpperCase();
+            const textarea = document.getElementById('inputCliente');
+            const clienteFormal = document.getElementById('clienteFormal');
+            
+            if (textarea.value.trim() === '') {
+                clienteFormal.innerHTML = 'Consumidor Final';
+            } else {
+                // Preservar espacios y saltos de línea
+                const texto = textarea.value
+                    .replace(/&/g, '&amp;')    // Escapar &
+                    .replace(/</g, '&lt;')     // Escapar <
+                    .replace(/>/g, '&gt;')     // Escapar >
+                    .replace(/\n/g, '<br>')    // Convertir saltos a <br>
+                    .replace(/  /g, ' &nbsp;') // Preservar dobles espacios
+                    .replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;'); // Preservar tabs
+                
+                clienteFormal.innerHTML = texto;
+            }
         }
 
         function agregarItem() {
             const desc = document.getElementById('descServicio').value.trim();
+            const tamano = document.getElementById('tamanoServicio').value;
             const cant = parseFloat(document.getElementById('cantServicio').value);
             const prec = parseFloat(document.getElementById('precServicio').value);
 
@@ -872,6 +935,7 @@
             tr.innerHTML = `
                 <td>${itemCounter++}</td>
                 <td style="text-align: left;">${desc}</td>
+                <td>${tamano}</td>
                 <td>${cant}</td>
                 <td>S/ ${prec.toFixed(2)}</td>
                 <td class="row-total">S/ ${totalLinea.toFixed(2)}</td>
@@ -880,7 +944,7 @@
             
             tbody.appendChild(tr);
             
-            // Limpiar inputs
+            // Limpiar inputs (excepto el tamaño que mantiene su valor seleccionado)
             document.getElementById('descServicio').value = '';
             document.getElementById('cantServicio').value = '1';
             document.getElementById('precServicio').value = '';
