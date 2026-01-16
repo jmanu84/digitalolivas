@@ -293,6 +293,32 @@
             text-align: left;
         }
         
+        /* Botones de acción */
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+        }
+        
+        .edit-btn {
+            background: #2196F3;
+            color: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .edit-btn:hover {
+            background: #1976D2;
+            transform: scale(1.1);
+        }
+        
         .delete-btn {
             background: #f44336;
             color: white;
@@ -310,6 +336,39 @@
         .delete-btn:hover {
             background: #d32f2f;
             transform: scale(1.1);
+        }
+        
+        .cancel-btn {
+            background: #ff9800;
+            color: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .cancel-btn:hover {
+            background: #f57c00;
+            transform: scale(1.1);
+        }
+        
+        /* Estilos para cuando está en modo edición */
+        .editing-input {
+            padding: 8px;
+            border: 1px solid #2196F3;
+            border-radius: 4px;
+            font-size: 14px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .editing-row {
+            background-color: #e3f2fd !important;
         }
         
         .invoice-footer {
@@ -602,7 +661,10 @@
             .no-print,
             header,
             .controls-area,
+            .edit-btn,
             .delete-btn,
+            .cancel-btn,
+            .action-buttons,
             .whatsapp-button,
             .mobile-menu-btn,
             .main-nav {
@@ -684,8 +746,9 @@
             <!-- Encabezado de la cotización -->
             <div class="invoice-header">
                 <div class="inv-logo">
-                    <h1>Digital Olivas</h1>
-                    <p>Av. Javier Prado Este N° 2800<br>
+                    <h1>Ploteo y Digitalización Integral</h1>
+                    <h3>RUC:10158415084</h3>
+                    <p>Av. San Luis 1907<br>
                        San Borja - Lima<br>
                        984858918<br>
                        digitalolivas@gmail.com<br>
@@ -716,7 +779,7 @@
                         <th style="width: 60px;">Cant.</th>
                         <th style="width: 90px;">P. Unit (S/)</th>
                         <th style="width: 90px;">Total (S/)</th>
-                        <th class="no-print" style="width: 50px;">Acción</th>
+                        <th class="no-print" style="width: 80px;">Acción</th>
                     </tr>
                 </thead>
                 <tbody id="tablaCuerpo">
@@ -756,7 +819,7 @@
             
             <!-- Información de la empresa y cuenta bancaria -->
             <div class="company-info">
-                <h4>DETALLE DE CUENTA BANCARIA:</h4>
+                <h4>DETALLE DE CUENTA BANCARIA: Delcy Jovanna Pacheco Canales.</h4>
                 <table class="bank-info-table">
                     <thead>
                         <tr>
@@ -767,9 +830,14 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>BBVA</td>
-                            <td>0011-0111-0100060853-27</td>
-                            <td>011-111-000100060853-27</td>
+                            <td>BCP SOLES</td>
+                            <td>193-38700937-0-54</td>
+                            <td>002-193-138700937054-15</td>
+                        </tr>
+                        <tr>
+                            <td>BBVA SOLES</td>
+                            <td>0011-0358-0200530141</td>
+                            <td>0011-0358-000200530141-97</td>
                         </tr>
                     </tbody>
                 </table>
@@ -790,7 +858,7 @@
                 </div>
                 
                 <p style="text-align: center; margin-top: 20px; font-style: italic; font-size: 11px;">
-                    Av. Javier Prado Este 2800 Int. 3 San Borja – Lima | Telf. 984858918 / digitalolivas@gmail.com
+                    Av. San Luis 1907 San Borja – Lima | digitalolivas@gmail.com
                 </p>
             </div>
         </div>
@@ -798,75 +866,119 @@
 
     <script>
         let itemCounter = 1;
-        let numeroCotizacion = 1;
+        // Obtener el número de cotización del localStorage o empezar en 1
+        let numeroCotizacion = localStorage.getItem('numeroCotizacion') ? parseInt(localStorage.getItem('numeroCotizacion')) : 1;
 
-        // Función para convertir números a letras
+        // Función CORREGIDA para convertir números a letras
         function numeroALetras(numero) {
-            const unidades = ['', 'UN', 'DOS', 'TRES', 'CUATRO', 'CINCO', 'SEIS', 'SIETE', 'OCHO', 'NUEVE'];
-            const decenas = ['', 'DIEZ', 'VEINTE', 'TREINTA', 'CUARENTA', 'CINCUENTA', 'SESENTA', 'SETENTA', 'OCHENTA', 'NOVENTA'];
-            const especiales = ['DIEZ', 'ONCE', 'DOCE', 'TRECE', 'CATORCE', 'QUINCE', 'DIECISEIS', 'DIECISIETE', 'DIECIOCHO', 'DIECINUEVE'];
-            const centenas = ['', 'CIENTO', 'DOSCIENTOS', 'TRESCIENTOS', 'CUATROCIENTOS', 'QUINIENTOS', 'SEISCIENTOS', 'SETECIENTOS', 'OCHOCIENTOS', 'NOVECIENTOS'];
-            
+            // Validar que sea un número
+            if (isNaN(numero) || numero === null) {
+                return "CERO CON 00/100 SOLES";
+            }
+
+            // Separar parte entera y decimal
             let entero = Math.floor(numero);
             let decimal = Math.round((numero - entero) * 100);
             
-            if (entero === 0) return 'CERO';
-            if (entero === 1) return 'UN';
-            
+            // Si el número es 0
+            if (entero === 0) {
+                return "CERO CON " + decimal.toString().padStart(2, '0') + "/100 SOLES";
+            }
+
+            // Arrays de palabras
+            const unidades = ['', 'UN', 'DOS', 'TRES', 'CUATRO', 'CINCO', 'SEIS', 'SIETE', 'OCHO', 'NUEVE'];
+            const decenas = ['', 'DIEZ', 'VEINTE', 'TREINTA', 'CUARENTA', 'CINCUENTA', 'SESENTA', 'SETENTA', 'OCHENTA', 'NOVENTA'];
+            const especiales = ['DIEZ', 'ONCE', 'DOCE', 'TRECE', 'CATORCE', 'QUINCE', 'DIECISÉIS', 'DIECISIETE', 'DIECIOCHO', 'DIECINUEVE'];
+            const centenas = ['', 'CIENTO', 'DOSCIENTOS', 'TRESCIENTOS', 'CUATROCIENTOS', 'QUINIENTOS', 'SEISCIENTOS', 'SETECIENTOS', 'OCHOCIENTOS', 'NOVECIENTOS'];
+            const miles = ['', 'MIL', 'MILLÓN', 'MIL MILLONES'];
+
             let palabras = '';
+
+            // Función para convertir grupos de 3 dígitos
+            function convertirGrupo(num) {
+                let palabrasGrupo = '';
+                
+                // Centenas
+                if (num >= 100) {
+                    if (num === 100) {
+                        palabrasGrupo += 'CIEN ';
+                        num = 0;
+                    } else {
+                        let centena = Math.floor(num / 100);
+                        palabrasGrupo += centenas[centena] + ' ';
+                        num %= 100;
+                    }
+                }
+                
+                // Decenas y unidades
+                if (num >= 10 && num <= 19) {
+                    palabrasGrupo += especiales[num - 10] + ' ';
+                    num = 0;
+                } else if (num >= 20) {
+                    let decena = Math.floor(num / 10);
+                    palabrasGrupo += decenas[decena];
+                    num %= 10;
+                    if (num > 0) palabrasGrupo += ' Y ';
+                }
+                
+                // Unidades
+                if (num > 0) {
+                    palabrasGrupo += unidades[num] + ' ';
+                }
+                
+                return palabrasGrupo;
+            }
+
+            // Si el número es muy grande (millones)
+            if (entero >= 1000000) {
+                let millones = Math.floor(entero / 1000000);
+                if (millones === 1) {
+                    palabras += 'UN MILLON ';
+                } else {
+                    palabras += convertirGrupo(millones) + 'MILLONES ';
+                }
+                entero %= 1000000;
+            }
             
             // Miles
             if (entero >= 1000) {
-                let miles = Math.floor(entero / 1000);
-                if (miles === 1) {
+                let milesNum = Math.floor(entero / 1000);
+                if (milesNum === 1) {
                     palabras += 'MIL ';
                 } else {
-                    palabras += numeroALetras(miles) + ' MIL ';
+                    palabras += convertirGrupo(milesNum) + 'MIL ';
                 }
                 entero %= 1000;
             }
             
-            // Centenas
-            if (entero >= 100) {
-                let centena = Math.floor(entero / 100);
-                if (entero === 100) {
-                    palabras += 'CIEN ';
-                    entero = 0;
-                } else {
-                    palabras += centenas[centena] + ' ';
-                    entero %= 100;
-                }
-            }
-            
-            // Decenas y unidades
+            // Restante (centenas, decenas, unidades)
             if (entero > 0) {
-                if (entero >= 10 && entero <= 19) {
-                    palabras += especiales[entero - 10] + ' ';
-                    entero = 0;
-                } else if (entero >= 20) {
-                    let decena = Math.floor(entero / 10);
-                    palabras += decenas[decena];
-                    entero %= 10;
-                    if (entero > 0) palabras += ' Y ';
-                }
-                
-                if (entero > 0) {
-                    palabras += unidades[entero] + ' ';
-                }
+                palabras += convertirGrupo(entero);
             }
             
-            // Decimales
-            palabras = palabras.trim() + ' CON ' + decimal.toString().padStart(2, '0') + '/100';
+            // Si no hay palabras (por ejemplo, número es 1000 exacto)
+            if (palabras.trim() === '') {
+                palabras = '';
+            }
             
-            return palabras + ' SOLES';
+            // Agregar decimales
+            let resultado = palabras.trim() + ' CON ' + decimal.toString().padStart(2, '0') + '/100 SOLES';
+            
+            // Convertir a mayúsculas y eliminar espacios dobles
+            resultado = resultado.toUpperCase().replace(/\s+/g, ' ').trim();
+            
+            return resultado;
         }
 
-        // Actualizar número de cotización
+        // Actualizar número de cotización (auto-incrementable)
         function actualizarNumeroCotizacion() {
             const hoy = new Date();
             const year = hoy.getFullYear();
             const numeroStr = numeroCotizacion.toString().padStart(3, '0');
             document.getElementById('numeroCotizacion').textContent = `${numeroStr}-${year}`;
+            
+            // Guardar en localStorage para persistencia
+            localStorage.setItem('numeroCotizacion', numeroCotizacion.toString());
         }
 
         // Poner fecha de hoy
@@ -920,20 +1032,31 @@
             const tbody = document.getElementById('tablaCuerpo');
             
             const tr = document.createElement('tr');
+            tr.setAttribute('data-index', itemCounter - 1);
             tr.innerHTML = `
                 <td>${itemCounter++}</td>
-                <td style="text-align: left;">${desc}</td>
-                <td>${tamano}</td>
-                <td>${cant}</td>
-                <td>S/ ${prec.toFixed(2)}</td>
-                <td class="row-total">S/ ${totalLinea.toFixed(2)}</td>
-                <td class="no-print"><button onclick="eliminarFila(this)" class="delete-btn"><i class="fas fa-trash"></i></button></td>
+                <td style="text-align: left;" data-field="descripcion">${desc}</td>
+                <td data-field="tamano">${tamano}</td>
+                <td data-field="cantidad">${cant}</td>
+                <td data-field="precio">S/ ${prec.toFixed(2)}</td>
+                <td class="row-total" data-field="total">S/ ${totalLinea.toFixed(2)}</td>
+                <td class="no-print">
+                    <div class="action-buttons">
+                        <button onclick="editarFila(this)" class="edit-btn" title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="eliminarFila(this)" class="delete-btn" title="Eliminar">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
             `;
             
             tbody.appendChild(tr);
             
-            // Limpiar inputs (excepto el tamaño que mantiene su valor seleccionado)
+            // Limpiar inputs
             document.getElementById('descServicio').value = '';
+            document.getElementById('tamanoServicio').value = '';
             document.getElementById('cantServicio').value = '1';
             document.getElementById('precServicio').value = '';
             document.getElementById('descServicio').focus();
@@ -941,9 +1064,145 @@
             calcularTotales();
         }
 
+        // Función para editar items
+        function editarFila(btn) {
+            const row = btn.closest('tr');
+            const isEditing = row.classList.contains('editing-row');
+            
+            if (isEditing) {
+                // Guardar cambios
+                guardarEdicion(row);
+            } else {
+                // Entrar en modo edición
+                entrarModoEdicion(row);
+            }
+        }
+
+        function entrarModoEdicion(row) {
+            // Marcar la fila como en edición
+            row.classList.add('editing-row');
+            
+            // Obtener los valores actuales
+            const descripcion = row.cells[1].textContent;
+            const tamano = row.cells[2].textContent;
+            const cantidad = row.cells[3].textContent;
+            const precioTexto = row.cells[4].textContent;
+            const precio = precioTexto.replace('S/ ', '');
+            
+            // Reemplazar celdas con inputs
+            row.cells[1].innerHTML = `<input type="text" class="editing-input" value="${descripcion}" data-field="descripcion" oninput="actualizarTotalFila(this)">`;
+            row.cells[2].innerHTML = `<input type="text" class="editing-input" value="${tamano}" data-field="tamano">`;
+            row.cells[3].innerHTML = `<input type="number" class="editing-input" value="${cantidad}" min="1" step="1" data-field="cantidad" oninput="actualizarTotalFila(this)">`;
+            row.cells[4].innerHTML = `<input type="number" class="editing-input" value="${precio}" min="0" step="0.01" data-field="precio" oninput="actualizarTotalFila(this)">`;
+            
+            // Calcular y mostrar el total actualizado en tiempo real
+            const totalLinea = parseFloat(cantidad) * parseFloat(precio);
+            row.cells[5].innerHTML = `S/ ${totalLinea.toFixed(2)}`;
+            
+            // Cambiar icono de editar a guardar
+            const editBtn = row.querySelector('.edit-btn');
+            editBtn.innerHTML = '<i class="fas fa-save"></i>';
+            editBtn.setAttribute('title', 'Guardar');
+            
+            // Agregar botón de cancelar
+            const actionCell = row.querySelector('.action-buttons');
+            if (!actionCell.querySelector('.cancel-btn')) {
+                const cancelBtn = document.createElement('button');
+                cancelBtn.className = 'cancel-btn';
+                cancelBtn.innerHTML = '<i class="fas fa-times"></i>';
+                cancelBtn.setAttribute('title', 'Cancelar');
+                cancelBtn.onclick = function() { cancelarEdicion(row); };
+                actionCell.insertBefore(cancelBtn, actionCell.querySelector('.delete-btn'));
+            }
+            
+            // Enfocar el primer input
+            row.cells[1].querySelector('input').focus();
+        }
+
+        // Función para actualizar el total de la fila en tiempo real durante la edición
+        function actualizarTotalFila(input) {
+            const row = input.closest('tr');
+            if (!row.classList.contains('editing-row')) return;
+            
+            const cantidadInput = row.querySelector('input[data-field="cantidad"]');
+            const precioInput = row.querySelector('input[data-field="precio"]');
+            
+            if (cantidadInput && precioInput) {
+                const cantidad = parseFloat(cantidadInput.value) || 0;
+                const precio = parseFloat(precioInput.value) || 0;
+                const totalLinea = cantidad * precio;
+                
+                row.cells[5].innerHTML = `S/ ${totalLinea.toFixed(2)}`;
+                
+                // También actualizar totales en tiempo real
+                calcularTotales();
+            }
+        }
+
+        function guardarEdicion(row) {
+            // Obtener los nuevos valores
+            const inputs = row.querySelectorAll('.editing-input');
+            
+            // Validar que todos los campos tengan valores válidos
+            const descripcion = inputs[0].value.trim();
+            const tamano = inputs[1].value;
+            const cantidad = parseFloat(inputs[2].value);
+            const precio = parseFloat(inputs[3].value);
+            
+            if (!descripcion || isNaN(cantidad) || cantidad <= 0 || isNaN(precio) || precio < 0) {
+                alert("Por favor complete todos los campos correctamente");
+                return;
+            }
+            
+            const totalLinea = cantidad * precio;
+            
+            // Actualizar celdas con los nuevos valores
+            row.cells[1].innerHTML = descripcion;
+            row.cells[2].innerHTML = tamano;
+            row.cells[3].innerHTML = cantidad;
+            row.cells[4].innerHTML = 'S/ ' + precio.toFixed(2);
+            row.cells[5].innerHTML = 'S/ ' + totalLinea.toFixed(2);
+            
+            // Salir del modo edición
+            salirModoEdicion(row);
+            
+            // Recalcular totales
+            calcularTotales();
+        }
+
+        function cancelarEdicion(row) {
+            // Salir del modo edición sin guardar
+            salirModoEdicion(row);
+            
+            // Recalcular totales con los valores originales
+            calcularTotales();
+        }
+
+        function salirModoEdicion(row) {
+            // Remover clase de edición
+            row.classList.remove('editing-row');
+            
+            // Restaurar botón de editar
+            const editBtn = row.querySelector('.edit-btn');
+            editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+            editBtn.setAttribute('title', 'Editar');
+            
+            // Eliminar botón de cancelar
+            const cancelBtn = row.querySelector('.cancel-btn');
+            if (cancelBtn) {
+                cancelBtn.remove();
+            }
+        }
+
         function eliminarFila(btn) {
-            const row = btn.parentNode.parentNode;
-            row.parentNode.removeChild(row);
+            const row = btn.closest('tr');
+            
+            // Si está en modo edición, cancelar primero
+            if (row.classList.contains('editing-row')) {
+                cancelarEdicion(row);
+            }
+            
+            row.remove();
             recalcularNumeracionItems();
             calcularTotales();
         }
@@ -953,6 +1212,7 @@
             itemCounter = 1;
             filas.forEach((fila, index) => {
                 fila.cells[0].textContent = itemCounter++;
+                fila.setAttribute('data-index', index);
             });
         }
 
@@ -961,11 +1221,30 @@
             let subtotal = 0;
 
             filas.forEach(fila => {
-                const celdaTotal = fila.querySelector('.row-total').textContent;
-                const valor = parseFloat(celdaTotal.replace('S/ ', '').replace(',', ''));
-                if (!isNaN(valor)) {
-                    subtotal += valor;
+                // Obtener el total de cada fila
+                const celdaTotal = fila.cells[5];
+                let valor = 0;
+                
+                if (fila.classList.contains('editing-row')) {
+                    // Si está en edición, calcular en tiempo real
+                    const cantidadInput = fila.querySelector('input[data-field="cantidad"]');
+                    const precioInput = fila.querySelector('input[data-field="precio"]');
+                    
+                    if (cantidadInput && precioInput) {
+                        const cantidad = parseFloat(cantidadInput.value) || 0;
+                        const precio = parseFloat(precioInput.value) || 0;
+                        valor = cantidad * precio;
+                        // Actualizar la celda de total en tiempo real
+                        celdaTotal.innerHTML = `S/ ${valor.toFixed(2)}`;
+                    }
+                } else {
+                    // Si no está en edición, obtener el valor del texto
+                    const textoTotal = celdaTotal.textContent;
+                    valor = parseFloat(textoTotal.replace('S/ ', '').replace(',', ''));
+                    if (isNaN(valor)) valor = 0;
                 }
+                
+                subtotal += valor;
             });
 
             const igv = subtotal * 0.18;
@@ -1065,6 +1344,13 @@
                 return;
             }
             
+            // Verificar si hay alguna fila en modo edición
+            const filasEditando = document.querySelectorAll('.editing-row');
+            if (filasEditando.length > 0) {
+                alert("Por favor guarde o cancele las ediciones pendientes antes de imprimir");
+                return;
+            }
+            
             // Incrementar número de cotización para la próxima
             numeroCotizacion++;
             actualizarNumeroCotizacion();
@@ -1089,10 +1375,6 @@
                     document.title = originalTitle;
                 }, 100);
             }, 100);
-            
-            // Después de imprimir, mantener el número actual
-            numeroCotizacion--;
-            actualizarNumeroCotizacion();
         }
 
         // Cargar script del menú móvil
@@ -1116,6 +1398,30 @@
             
             // Auto-focus en el primer campo
             document.getElementById('descServicio').focus();
+            
+            // Permitir editar con Enter en modo edición
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    const editingRow = document.querySelector('.editing-row');
+                    if (editingRow) {
+                        const editBtn = editingRow.querySelector('.edit-btn');
+                        if (editBtn) {
+                            editBtn.click();
+                        }
+                    }
+                }
+                
+                // Permitir cancelar con Escape
+                if (event.key === 'Escape') {
+                    const editingRow = document.querySelector('.editing-row');
+                    if (editingRow) {
+                        const cancelBtn = editingRow.querySelector('.cancel-btn');
+                        if (cancelBtn) {
+                            cancelBtn.click();
+                        }
+                    }
+                }
+            });
         });
     </script>
 </body>
